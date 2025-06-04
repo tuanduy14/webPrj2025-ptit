@@ -1,46 +1,45 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cửa Hàng Online</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Danh sách sản phẩm</title>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-    <header>
-        <h1>Cửa Hàng ABC</h1>
-        <div class="cart-icon">🛒 <span id="cart-count">0</span></div>
-    </header>
-
-    <main>
-        <section class="product-filters">
-            <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm...">
-            <select id="category-filter">
-                <option value="">Tất cả danh mục</option>
-                <!-- Categories will be loaded from API -->
-            </select>
-        </section>
-
-        <section class="products-container" id="products">
-            <!-- Products will be loaded here -->
-            <div class="loading">Đang tải sản phẩm...</div>
-        </section>
-    </main>
-
-    <div class="cart-modal" id="cart-modal">
-        <div class="cart-content">
-            <span class="close-btn">&times;</span>
-            <h2>Giỏ hàng</h2>
-            <div class="cart-items" id="cart-items">
-                <!-- Cart items will appear here -->
-            </div>
-            <div class="cart-total">
-                <p>Tổng cộng: <span id="total-price">0</span>đ</p>
-                <button class="checkout-btn">Thanh toán</button>
-            </div>
-        </div>
+  <header id="pageHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+    <h1 id="siteTitle" style="margin: 0; cursor: pointer;">Sản phẩm</h1>
+    <div class="menu__header">
+      <nav>
+        <ul class="nav__link">
+          <li><a href="#!">Trang chủ</a></li>
+          <li><a href="#!">Giới thiệu</a></li>
+          <li><a href="#!">Sản phẩm</a></li>
+          <li><a href="#!">Liên hệ</a></li>
+        </ul>
+      </nav>
     </div>
+    <button id="btnViewCart" style="background-color: #28a745;">Xem giỏ hàng</button>
+  </header>
 
-    <script src="main.js"></script>
+  <div class="filters">
+    <select id="categorySelect">
+      <option value="">Tất cả danh mục</option>
+    </select>
+    <input type="number" id="minPrice" placeholder="Giá thấp nhất" min="0"/>
+    <input type="number" id="maxPrice" placeholder="Giá cao nhất" min="0"/>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..."/>
+      <button id="btnSearch">Tìm</button>
+    </div>
+  </div>
+
+  <div class="products" id="productList"></div>
+  <div style="text-align:center; margin: 1rem 0;">
+    <button id="btnLoadMore" style="padding: 0.5rem 1rem; font-size:1rem; display:none;">Xem thêm</button>
+  </div>
+  <div id="noResults" style="display:none;">Không tìm thấy sản phẩm phù hợp.</div>
+
+  <script src="main.js"></script>
 </body>
 </html>
