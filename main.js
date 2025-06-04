@@ -54,6 +54,7 @@ async function filterAndSearchProducts() {
     const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
     const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
     const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const selectedCategory = document.getElementById('categorySelect').value;
 
     let filtered = allProducts;
 
@@ -61,6 +62,14 @@ async function filterAndSearchProducts() {
 
     if (searchQuery) {
         filtered = filtered.filter(p => p.title.toLowerCase().includes(searchQuery));
+    }
+
+    if (selectedCategory) {
+        filtered = filtered.filter(p => 
+            p.category === selectedCategory || 
+            (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase())) ||
+            (selectedCategory && selectedCategory.toLowerCase().includes(p.category.toLowerCase()))
+        );
     }
 
     filtered.sort((a, b) => a.price - b.price);
