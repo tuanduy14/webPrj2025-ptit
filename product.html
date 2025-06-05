@@ -4,16 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chi tiết sản phẩm</title>
+  <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/product.css">
   <script defer src="product.js"></script>
-
 </head>
 <body>
+  <header id="pageHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+    <h1 id="headerTitle" style="margin: 0; cursor: pointer;">← Quay lại</h1>
+    <div class="menu__header">
+      <nav>
+        <ul class="nav__link">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="#!">Giới thiệu</a></li>
+          <li><a href="index.html">Sản phẩm</a></li>
+          <li><a href="#!">Liên hệ</a></li>
+        </ul>
+      </nav>
+    </div>
+    <button id="btnViewCart" style="background-color: #28a745;">Xem giỏ hàng</button>
+  </header>
 
-  <header id="headerTitle">← Quay lại trang danh sách</header>
+  <div class="product-container">
+    <div id="productContainer" class="product-detail">
+      <!-- Nội dung chi tiết sản phẩm sẽ load ở đây -->
+    </div>
+  </div>
 
-  <div id="productContainer" class="product-detail">
-    <!-- Nội dung chi tiết sản phẩm sẽ load ở đây -->
+  <div class="related-products">
+    <h2>Sản phẩm liên quan</h2>
+    <div id="relatedProducts" class="products">
+      <!-- Sản phẩm liên quan sẽ được hiển thị ở đây -->
+    </div>
   </div>
 
 </body>
