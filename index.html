@@ -3,43 +3,197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Danh sách sản phẩm</title>
+  <title>F4ProMall - Cửa hàng thời trang</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="main.js" ></script>
 </head>
 <body>
-  <header id="pageHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
-    <h1 id="siteTitle" style="margin: 0; cursor: pointer;">Sản phẩm</h1>
-    <div class="menu__header">
-      <nav>
-        <ul class="nav__link">
-          <li><a href="#!">Trang chủ</a></li>
-          <li><a href="#!">Giới thiệu</a></li>
-          <li><a href="#!">Sản phẩm</a></li>
-          <li><a href="#!">Liên hệ</a></li>
-        </ul>
-      </nav>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fas fa-phone-alt"></i> Hotline: 0123 456 789</span>
+        <span><i class="fas fa-envelope"></i> Email: support@f4promall.com</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="#"><i class="fas fa-user"></i> Đăng nhập</a>
+        <a href="#"><i class="fas fa-heart"></i> Yêu thích</a>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
     </div>
-    <button id="btnViewCart" style="background-color: #28a745;">Xem giỏ hàng</button>
+  </div>
+
+  <!-- Header -->
+  <header id="pageHeader">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1 id="siteTitle">F4ProMall</h1>
+        </div>
+        <div class="header-search">
+          <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..."/>
+            <button id="btnSearch"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="cart-icon">
+            <a href="#" id="btnViewCart">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="cart-count">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <div class="filters">
-    <select id="categorySelect">
-      <option value="">Tất cả danh mục</option>
-    </select>
-    <input type="number" id="minPrice" placeholder="Giá thấp nhất" min="0"/>
-    <input type="number" id="maxPrice" placeholder="Giá cao nhất" min="0"/>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..."/>
-      <button id="btnSearch">Tìm</button>
+  <!-- Main Navigation -->
+  <nav class="main-nav">
+    <div class="container">
+      <ul class="nav__link">
+        <li><a href="#!">Trang chủ</a></li>
+        <li><a href="#!">Sản phẩm</a></li>
+        <li><a href="#!">Khuyến mãi</a></li>
+        <li><a href="#!">Bộ sưu tập</a></li>
+        <li><a href="#!">Giới thiệu</a></li>
+        <li><a href="#!">Liên hệ</a></li>
+      </ul>
     </div>
-  </div>
+  </nav>
 
-  <div class="products" id="productList"></div>
-  <div style="text-align:center; margin: 1rem 0;">
-    <button id="btnLoadMore" style="padding: 0.5rem 1rem; font-size:1rem; display:none;">Xem thêm</button>
-  </div>
-  <div id="noResults" style="display:none;">Không tìm thấy sản phẩm phù hợp.</div>
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="container">
+      <div class="hero-content">
+        <h2>Bộ sưu tập mới 2025</h2>
+        <p>Khám phá xu hướng thời trang mới nhất với các sản phẩm độc đáo</p>
+        <a href="#" class="btn btn-primary">Mua ngay</a>
+      </div>
+    </div>
+  </section>
 
-  <script src="main.js"></script>
+  <!-- Filter Section -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filters">
+        <select id="categorySelect">
+          <option value="">Tất cả danh mục</option>
+        </select>
+        <input type="number" id="minPrice" placeholder="Giá thấp nhất" min="0"/>
+        <input type="number" id="maxPrice" placeholder="Giá cao nhất" min="0"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured-products">
+    <div class="container">
+      <div class="section-title">
+        <h2>Sản phẩm nổi bật</h2>
+        <p>Khám phá những sản phẩm được yêu thích nhất</p>
+      </div>
+      <div class="products" id="productList"></div>
+      <div class="load-more">
+        <button id="btnLoadMore">Xem thêm</button>
+      </div>
+      <div id="noResults">Không tìm thấy sản phẩm phù hợp.</div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="container">
+      <div class="feature-items">
+        <div class="feature-item">
+          <i class="fas fa-truck"></i>
+          <h3>Miễn phí vận chuyển</h3>
+          <p>Cho đơn hàng trên 500.000đ</p>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-undo"></i>
+          <h3>Đổi trả dễ dàng</h3>
+          <p>Trong vòng 30 ngày</p>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-lock"></i>
+          <h3>Thanh toán an toàn</h3>
+          <p>Bảo mật thông tin</p>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-headset"></i>
+          <h3>Hỗ trợ 24/7</h3>
+          <p>Luôn sẵn sàng hỗ trợ</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter">
+    <div class="container">
+      <div class="newsletter-content">
+        <h2>Đăng ký nhận tin</h2>
+        <p>Nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Nhập email của bạn">
+          <button type="submit">Đăng ký</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>F4ProMall</h3>
+          <p>Sàn thương mại điện tử hàng đầu với các sản phẩm chất lượng cao và dịch vụ khách hàng tuyệt vời.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Liên kết nhanh</h3>
+          <ul>
+            <li><a href="#">Trang chủ</a></li>
+            <li><a href="#">Sản phẩm</a></li>
+            <li><a href="#">Giới thiệu</a></li>
+            <li><a href="#">Liên hệ</a></li>
+            <li><a href="#">Chính sách</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Danh mục</h3>
+          <ul>
+            <li><a href="#">Thời trang nam</a></li>
+            <li><a href="#">Thời trang nữ</a></li>
+            <li><a href="#">Phụ kiện</a></li>
+            <li><a href="#">Giày dép</a></li>
+            <li><a href="#">Túi xách</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Liên hệ</h3>
+          <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận XYZ, TP. HCM</p>
+          <p><i class="fas fa-phone-alt"></i> 0123 456 789</p>
+          <p><i class="fas fa-envelope"></i> support@f4promall.com</p>
+          <p><i class="fas fa-clock"></i> Thứ 2 - Chủ nhật: 9:00 - 21:00</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 F4ProMall. Tất cả quyền được bảo lưu.</p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
