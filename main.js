@@ -63,7 +63,6 @@ function displayProducts(products) {
             <div class="product-actions">
               <button class="quick-view" data-id="${product.id}"><i class="fas fa-eye"></i></button>
               <button class="add-to-cart" data-id="${product.id}"><i class="fas fa-shopping-cart"></i></button>
-              <button class="add-to-wishlist" data-id="${product.id}"><i class="fas fa-heart"></i></button>
             </div>
           </div>
           <div class="product-info">
