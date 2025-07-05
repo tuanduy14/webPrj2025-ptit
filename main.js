@@ -148,9 +148,7 @@ async function filterAndSearchProducts() {
 
     if (selectedCategory) {
         filtered = filtered.filter(p => 
-            p.category === selectedCategory || 
-            (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase())) ||
-            (selectedCategory && selectedCategory.toLowerCase().includes(p.category.toLowerCase()))
+            p.category === selectedCategory
         );
     }
 
