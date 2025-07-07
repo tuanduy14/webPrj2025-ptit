@@ -2,9 +2,31 @@ let allProducts = [];
 let currentFilteredProducts = [];
 let productsToShow = 30;
 
+const authLink = document.getElementById('auth-link')
+const logout = document.getElementById('logout')
+const user = JSON.parse(localStorage.getItem('user') || '{}')
+
+console.log('user: ', user);
+
+
+if (Object.keys(user).length <= 0) {
+    authLink.innerHTML = '<a id="auth-link" href="login.html"><i class="fas fa-user"></i>Đăng nhập</a>'
+} else {
+    authLink.innerHTML += `<i class="fas fa-user"></i>${user.username}`
+    logout.innerHTML += '<i class="fa-solid fa-arrow-right-from-bracket" style="margin-left: 20px; "></i>Đăng xuất'
+}
+
+function logoutBtn() {
+    localStorage.setItem('user', '')
+    console.log('user: ', localStorage.getItem('user'));
+    localStorage.setItem('cart', '')
+    console.log('cart: ', localStorage.getItem('cart'));
+    window.location.href = '/';
+}
+
 // Cập nhật số lượng sản phẩm trong giỏ hàng
 function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const cartCount = document.querySelector('.cart-count');
     if (cartCount) {
         const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
@@ -42,11 +64,11 @@ function displayProducts(products) {
 
     productsToDisplay.forEach(product => {
         // Tính giảm giá nếu có
-        const discountBadge = product.discountPercentage ? 
+        const discountBadge = product.discountPercentage ?
             `<span class="discount-badge">-${Math.round(product.discountPercentage)}%</span>` : '';
 
         // Hiển thị đánh giá
-        const rating = product.rating ? 
+        const rating = product.rating ?
             `<div class="rating">
                 <span class="stars" style="--rating: ${product.rating};"></span>
                 <span class="rating-text">${product.rating}/5</span>
@@ -63,7 +85,6 @@ function displayProducts(products) {
             <div class="product-actions">
               <button class="quick-view" data-id="${product.id}"><i class="fas fa-eye"></i></button>
               <button class="add-to-cart" data-id="${product.id}"><i class="fas fa-shopping-cart"></i></button>
-              <button class="add-to-wishlist" data-id="${product.id}"><i class="fas fa-heart"></i></button>
             </div>
           </div>
           <div class="product-info">
@@ -93,8 +114,29 @@ function displayProducts(products) {
     }
 }
 
+async function updateOrderInCartApi(product) {
+    const user = JSON.parse(localStorage.getItem('user'))
+    fetch(`http://localhost:5000/user/update-order-in-cart`, {
+        method: 'PATCH', headers: {
+            'Content-Type': 'application/json'
+        }, body: JSON.stringify({ userId: user._id, product: product })
+    }).then(res => {
+        if (!res.ok) {
+            // Throw an error if HTTP status is not OK (200–299)
+            return res.json().then(err => {
+                throw new Error(err.message || `HTTP error ${res.status}`);
+            });
+        }
+        return res.json();
+    }).catch(e => {
+        alert(e)
+        console.log(e);
+        throw new Error(e)
+    })
+}
+
 // Thêm sản phẩm vào giỏ hàng từ danh sách sản phẩm
-function addToCartFromList(productId) {
+async function addToCartFromList(productId) {
     const product = allProducts.find(p => p.id == productId);
     if (!product) return;
 
@@ -102,8 +144,10 @@ function addToCartFromList(productId) {
     const index = cart.findIndex(item => item.id === product.id);
 
     if (index > -1) {
+        await updateOrderInCartApi({ productId: product.id, quantity: cart[index].quantity + 1 })
         cart[index].quantity += 1;
     } else {
+        await updateOrderInCartApi({ productId: product.id, quantity: 1 })
         cart.push({ ...product, quantity: 1 });
     }
 
@@ -148,10 +192,8 @@ async function filterAndSearchProducts() {
     }
 
     if (selectedCategory) {
-        filtered = filtered.filter(p => 
-            p.category === selectedCategory || 
-            (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase())) ||
-            (selectedCategory && selectedCategory.toLowerCase().includes(p.category.toLowerCase()))
+        filtered = filtered.filter(p =>
+            p.category === selectedCategory
         );
     }
 
@@ -198,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("btnViewCart").addEventListener("click", (e) => {
         e.preventDefault();
-        window.location.href = "cart.html"; // dẫn tới trang giỏ hàng
+        window.location.href = "/cart.html"; // dẫn tới trang giỏ hàng
     });
 
     // Thêm CSS cho thông báo
@@ -300,30 +342,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function fetchCategories() {
     const categories = [
-        {slug: "beauty", tên: "Vẻ đẹp"},
-        {slug: "fragrances", tên: "Hương thơm"},
-        {slug: "furniture", tên: "Đồ nội thất"},
-        {slug: "groceries", tên: "Hàng tạp hóa"},
-        {slug: "home-decoration", tên: "Trang trí nhà cửa"},
-        {slug: "kitchen-accessories", tên: "Phụ kiện nhà bếp"},
-        {slug: "laptops", tên: "Máy tính xách tay"},
-        {slug: "mens-shirts", tên: "Áo sơ mi nam"},
-        {slug: "mens-shoes", tên: "Giày nam"},
-        {slug: "mens-watches", tên: "Đồng hồ nam"},
-        {slug: "mobile-accessories", tên: "Phụ kiện di động"},
-        {slug: "motorcycle", tên: "Xe máy"},
-        {slug: "skin-care", tên: "Chăm sóc da"},
-        {slug: "smartphones", tên: "Điện thoại thông minh"},
-        {slug: "sports-accessories", tên: "Phụ kiện thể thao"},
-        {slug: "sunglasses", tên: "Kính râm"},
-        {slug: "tablets", tên: "Máy tính bảng"},
-        {slug: "tops", tên: "Áo nữ"},
-        {slug: "vehicle", tên: "Xe"},
-        {slug: "womens-bags", tên: "Túi xách nữ"},
-        {slug: "womens-dresses", tên: "Váy nữ"},
-        {slug: "womens-jewellery", tên: "Trang sức nữ"},
-        {slug: "womens-shoes", tên: "Giày nữ"},
-        {slug: "womens-watches", tên: "Đồng hồ nữ"},
+        { slug: "beauty", tên: "Vẻ đẹp" },
+        { slug: "fragrances", tên: "Hương thơm" },
+        { slug: "furniture", tên: "Đồ nội thất" },
+        { slug: "groceries", tên: "Hàng tạp hóa" },
+        { slug: "home-decoration", tên: "Trang trí nhà cửa" },
+        { slug: "kitchen-accessories", tên: "Phụ kiện nhà bếp" },
+        { slug: "laptops", tên: "Máy tính xách tay" },
+        { slug: "mens-shirts", tên: "Áo sơ mi nam" },
+        { slug: "mens-shoes", tên: "Giày nam" },
+        { slug: "mens-watches", tên: "Đồng hồ nam" },
+        { slug: "mobile-accessories", tên: "Phụ kiện di động" },
+        { slug: "motorcycle", tên: "Xe máy" },
+        { slug: "skin-care", tên: "Chăm sóc da" },
+        { slug: "smartphones", tên: "Điện thoại thông minh" },
+        { slug: "sports-accessories", tên: "Phụ kiện thể thao" },
+        { slug: "sunglasses", tên: "Kính râm" },
+        { slug: "tablets", tên: "Máy tính bảng" },
+        { slug: "tops", tên: "Áo nữ" },
+        { slug: "vehicle", tên: "Xe" },
+        { slug: "womens-bags", tên: "Túi xách nữ" },
+        { slug: "womens-dresses", tên: "Váy nữ" },
+        { slug: "womens-jewellery", tên: "Trang sức nữ" },
+        { slug: "womens-shoes", tên: "Giày nữ" },
+        { slug: "womens-watches", tên: "Đồng hồ nữ" },
     ];
 
     const categorySelect = document.getElementById("categorySelect");

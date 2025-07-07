@@ -6,7 +6,6 @@
   <title>F4ProMall</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/style.css">
-  <script defer src="main.js" ></script>
 </head>
 <body>
   <!-- Top Bar -->
@@ -17,8 +16,8 @@
         <span><i class="fas fa-envelope"></i> Email: support@f4promall.com</span>
       </div>
       <div class="top-bar-right">
-        <a href="login.html"><i class="fas fa-user"></i> Đăng nhập</a>
-        <a href="#"><i class="fas fa-heart"></i> Yêu thích</a>
+        <span id="auth-link"></span>
+        <span href="#" id="logout" style="cursor: pointer;" onclick="logoutBtn()"></span>
         <div class="social-icons">
           <a href="#"><i class="fab fa-facebook-f"></i></a>
           <a href="#"><i class="fab fa-twitter"></i></a>
@@ -59,9 +58,6 @@
       <ul class="nav__link">
         <li><a href="#!">Trang chủ</a></li>
         <li><a href="#main-featured-products">Sản phẩm</a></li>
-        <li><a href="#!">Khuyến mãi</a></li>
-        <li><a href="#!">Bộ sưu tập</a></li>
-        <li><a href="#!">Giới thiệu</a></li>
         <li><a href="#main-footer">Liên hệ</a></li>
       </ul>
     </div>
@@ -71,9 +67,9 @@
   <section class="hero-banner">
     <div class="container">
       <div class="hero-content">
-        <h2>Bộ sưu tập mới 2025</h2>
-        <p>Khám phá xu hướng thời trang mới nhất với các sản phẩm độc đáo</p>
-        <a href="#" class="btn btn-primary">Mua ngay</a>
+        <h2>Sản phẩm chất lượng cao</h2>
+        <p>Khám phá các sản phẩm tốt nhất với giá cả hợp lý</p>
+        <a href="#main-featured-products" class="btn btn-primary">Xem sản phẩm</a>
       </div>
     </div>
   </section>
@@ -195,5 +191,6 @@
       </div>
     </div>
   </footer>
+  <script src="main.js"></script>
 </body>
 </html>

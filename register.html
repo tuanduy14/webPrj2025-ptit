@@ -26,8 +26,8 @@
     </div>
   </div>
     <div class="login-register-container">
-        <h1>Đăng nhập</h1>
-        <form id="login-form">
+        <h1>Đăng ký</h1>
+        <form id="register-form">
             <div class="input-group">
                 <input type="text" name="username" required>
                 <label>Tên người dùng</label>
@@ -36,11 +36,15 @@
                 <input type="password" name="password" required>
                 <label>Mật khẩu</label>
             </div>
-            <a href="register.html"><small>Đăng ký</small></a>
-            <button type="submit" style="margin-top: 10px;">Đăng nhập</button>
+            <div class="input-group">
+                <input type="password" name="rePassword" required>
+                <label>Nhập lại mật khẩu</label>
+            </div>
+            <a href="login.html"><small>Đăng nhập</small></a>
+            <button type="submit" style="margin-top: 10px;">Đăng ký</button>
         </form>
     </div>
 
-    <script src="./login.js"></script>
+    <script src="./register.js"></script>
 </body>
 </html> 

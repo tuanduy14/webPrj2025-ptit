@@ -1,4 +1,4 @@
- // Cập nhật số lượng sản phẩm trong giỏ hàng
+// Cập nhật số lượng sản phẩm trong giỏ hàng
 function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const cartCount = document.querySelector('.cart-count');
@@ -12,6 +12,27 @@ function updateCartCount() {
 function getProductIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
+}
+
+async function updateOrderInCartApi(product) {
+    const user = JSON.parse(localStorage.getItem('user'))
+    fetch(`http://localhost:5000/user/update-order-in-cart`, {
+        method: 'PATCH', headers: {
+            'Content-Type': 'application/json'
+        }, body: JSON.stringify({ userId: user._id, product: product })
+    }).then(res => {
+        if (!res.ok) {
+            // Throw an error if HTTP status is not OK (200–299)
+            return res.json().then(err => {
+                throw new Error(err.message || `HTTP error ${res.status}`);
+            });
+        }
+        return res.json();
+    }).catch(e => {
+        alert(e)
+        console.log(e);
+        throw new Error(e)
+    })
 }
 
 // Lấy dữ liệu sản phẩm
@@ -46,27 +67,27 @@ function displayProduct(product) {
             <div class="product-gallery">
                 <img src="${product.thumbnail}" alt="${product.title}" class="main-image" />
                 <div class="thumbnail-gallery">
-                    ${product.images.slice(0, 4).map(img => 
-                        `<img src="${img}" alt="${product.title}" onclick="changeMainImage(this.src)" />`
-                    ).join('')}
+                    ${product.images.slice(0, 4).map(img =>
+            `<img src="${img}" alt="${product.title}" onclick="changeMainImage(this.src)" />`
+        ).join('')}
                 </div>
             </div>
         `;
     }
 
     // Tính giảm giá nếu có
-    const discountPercentage = product.discountPercentage ? 
+    const discountPercentage = product.discountPercentage ?
         `<span class="discount-badge">-${Math.round(product.discountPercentage)}%</span>` : '';
 
     // Hiển thị đánh giá
-    const rating = product.rating ? 
+    const rating = product.rating ?
         `<div class="rating">
             <span class="stars" style="--rating: ${product.rating};"></span>
             <span class="rating-text">${product.rating}/5 (${product.stock} đánh giá)</span>
         </div>` : '';
 
     // Tính giá gốc nếu có giảm giá
-    const originalPrice = product.discountPercentage ? 
+    const originalPrice = product.discountPercentage ?
         `<span class="original-price">${Math.round(product.price / (1 - product.discountPercentage / 100))}$</span>` : '';
 
     container.innerHTML = `
@@ -137,6 +158,7 @@ function displayProduct(product) {
     document.getElementById('addToCartBtn').addEventListener('click', () => {
         const quantity = parseInt(document.getElementById('quantity').value);
         addToCart(product, quantity);
+        
         showNotification('Đã thêm sản phẩm vào giỏ hàng!');
     });
 
@@ -170,14 +192,17 @@ function showNotification(message) {
 }
 
 // Thêm sản phẩm vào giỏ hàng (localStorage)
-function addToCart(product, quantity = 1) {
+async function addToCart(product, quantity = 1) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const index = cart.findIndex(item => item.id === product.id);
     if (index > -1) {
         cart[index].quantity += quantity;
+        await updateOrderInCartApi({productId: product.id, quantity: cart[index].quantity})
     } else {
         cart.push({ ...product, quantity: quantity });
+        await updateOrderInCartApi({productId: product.id, quantity: quantity})
     }
+    
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
 }
@@ -205,11 +230,11 @@ function displayRelatedProducts(products) {
 
     container.innerHTML = products.map(product => {
         // Tính giảm giá nếu có
-        const discountBadge = product.discountPercentage ? 
+        const discountBadge = product.discountPercentage ?
             `<span class="discount-badge">-${Math.round(product.discountPercentage)}%</span>` : '';
 
         // Hiển thị đánh giá
-        const rating = product.rating ? 
+        const rating = product.rating ?
             `<div class="rating">
                 <span class="stars" style="--rating: ${product.rating};"></span>
                 <span class="rating-text">${product.rating}/5</span>

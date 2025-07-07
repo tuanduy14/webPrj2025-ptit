@@ -1,4 +1,16 @@
- // Cập nhật số lượng sản phẩm trong giỏ hàng
+const authLink = document.getElementById('auth-link')
+const user = JSON.parse(localStorage.getItem('user'))
+
+console.log('user: ', user);
+
+
+if (!user) {
+    authLink.innerHTML = '<a id="auth-link" href="login.html"><i class="fas fa-user"></i></a>'
+} else {
+    authLink.innerHTML += `<i class="fas fa-user"></i>${user.username}`
+}
+
+// Cập nhật số lượng sản phẩm trong giỏ hàng
 function updateCartCount() {
     const cart = getCart();
     const cartCount = document.querySelector('.cart-count');
@@ -76,7 +88,7 @@ function renderCart() {
         const itemTotal = item.price * item.quantity;
 
         // Tính giảm giá nếu có
-        const discountBadge = item.discountPercentage ? 
+        const discountBadge = item.discountPercentage ?
             `<span class="discount-badge">-${Math.round(item.discountPercentage)}%</span>` : '';
 
         html += `
@@ -97,14 +109,14 @@ function renderCart() {
                 <td class="price-col">${item.price}$</td>
                 <td class="quantity-col">
                     <div class="quantity-selector">
-                        <button class="quantity-btn minus" data-index="${index}">-</button>
+                        <button class="quantity-btn minus" data-index="${index}" data-product-id="${item.id}">-</button>
                         <input type="number" value="${item.quantity}" min="1" data-index="${index}" class="qty-input">
-                        <button class="quantity-btn plus" data-index="${index}">+</button>
+                        <button class="quantity-btn plus" data-index="${index}" data-product-id="${item.id}">+</button>
                     </div>
                 </td>
                 <td class="total-col">${itemTotal.toFixed(2)}$</td>
                 <td class="action-col">
-                    <button class="remove-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
+                    <button class="remove-btn" data-index="${index}" data-product-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
                 </td>
             </tr>
         `;
@@ -405,16 +417,39 @@ function renderCart() {
         });
     });
 
+    async function updateOrderInCartApi(product) {
+        const user = JSON.parse(localStorage.getItem('user'))
+        fetch(`http://localhost:5000/user/update-order-in-cart`, {
+            method: 'PATCH', headers: {
+                'Content-Type': 'application/json'
+            }, body: JSON.stringify({ userId: user._id, product: product })
+        }).then(res => {
+            if (!res.ok) {
+                // Throw an error if HTTP status is not OK (200–299)
+                return res.json().then(err => {
+                    throw new Error(err.message || `HTTP error ${res.status}`);
+                });
+            }
+            return res.json();
+        }).catch(e => {
+            alert(e)
+            console.log(e);
+            throw new Error(e)
+        })
+    }
+
     // Xử lý nút giảm số lượng
     document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
-        btn.addEventListener('click', e => {
+        btn.addEventListener('click', async (e) => {
             const idx = e.target.dataset.index;
+            const productId = e.target.dataset.productId;
             const input = document.querySelector(`.qty-input[data-index="${idx}"]`);
             let val = parseInt(input.value);
             if (val > 1) {
                 input.value = val - 1;
                 cart[idx].quantity = val - 1;
                 saveCart(cart);
+                await updateOrderInCartApi({productId: parseInt(productId), quantity: val - 1})
                 renderCart();
             }
         });
@@ -422,21 +457,49 @@ function renderCart() {
 
     // Xử lý nút tăng số lượng
     document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
-        btn.addEventListener('click', e => {
+        btn.addEventListener('click', async (e) => {
             const idx = e.target.dataset.index;
+            const productId = e.target.dataset.productId;
             const input = document.querySelector(`.qty-input[data-index="${idx}"]`);
             let val = parseInt(input.value);
             input.value = val + 1;
             cart[idx].quantity = val + 1;
             saveCart(cart);
+            await updateOrderInCartApi({productId: parseInt(productId), quantity: val + 1})
             renderCart();
+
         });
     });
 
+    const removeFromCartApi = async (productId) => {
+        const user = JSON.parse(localStorage.getItem('user'))
+        console.log('prId: ', productId);
+
+        await fetch(`http://localhost:5000/user/remove-from-cart`, {
+            method: 'PATCH', headers: {
+                'Content-Type': 'application/json'
+            }, body: JSON.stringify({ userId: user._id, productId: productId })
+        }).then(res => {
+            if (!res.ok) {
+                // Throw an error if HTTP status is not OK (200–299)
+                return res.json().then(err => {
+                    throw new Error(err.message || `HTTP error ${res.status}`);
+                });
+            }
+            return res.json();
+        }).catch(e => {
+            alert(e)
+            console.log(e);
+            throw new Error(e)
+        })
+    }
+
     // Xử lý xóa sản phẩm
     document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
+        btn.addEventListener('click', async (e) => {
             const idx = e.target.closest('.remove-btn').dataset.index;
+            const productId = e.target.closest('.remove-btn').dataset.productId;
+            await removeFromCartApi(productId)
             cart.splice(idx, 1);
             saveCart(cart);
             showNotification('Đã xóa sản phẩm khỏi giỏ hàng!');
@@ -444,18 +507,28 @@ function renderCart() {
         });
     });
 
+    console.log('cart: ', localStorage.getItem('cart'));
+
+
     // Xử lý thanh toán
-    document.getElementById('checkoutBtn').addEventListener('click', () => {
-        alert(`Bạn đã thanh toán ${cart.length} sản phẩm với tổng số tiền ${total.toFixed(2)}$`);
+    document.getElementById('checkoutBtn').addEventListener('click', async () => {
+        const items = JSON.parse(localStorage.getItem('cart'))
+
+        console.log('items: ', items);
+        
+        
+        await Promise.all(items.map(async (item) => await removeFromCartApi(item.id)))
         localStorage.removeItem('cart');
-        showNotification('Đặt hàng thành công!');
+        // showNotification('Đặt hàng thành công!');
+        alert(`Bạn đã thanh toán ${cart.length} sản phẩm với tổng số tiền ${total.toFixed(2)}$`);
+        updateCartCount();
         renderCart();
     });
 }
 
 // Xử lý nút trang chủ
 document.getElementById('siteTitle').addEventListener('click', () => {
-    window.location.href = 'index.html';
+    window.location.href = '/';
 });
 
 // Khởi tạo

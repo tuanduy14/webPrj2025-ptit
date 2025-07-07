@@ -106,7 +106,7 @@ a {
 /* Login Form Styles */
 /* ---------------------- */
 
-.login-container {
+.login-register-container {
     background: #ffffff;
     padding: 40px 30px;
     border-radius: 16px;
@@ -118,7 +118,7 @@ a {
     animation: fadeIn 0.8s ease;
 }
 
-.login-container h1 {
+.login-register-container h1 {
     margin-bottom: 30px;
     color: #333;
     font-weight: 600;
@@ -167,7 +167,7 @@ a {
 }
 
 /* Login Button */
-.login-container button {
+.login-register-container button {
     width: 100%;
     padding: 14px;
     background: linear-gradient(135deg, #ff6a6a, #ff4b2b);
@@ -179,7 +179,7 @@ a {
     transition: background 0.3s;
 }
 
-.login-container button:hover {
+.login-register-container button:hover {
     background: linear-gradient(135deg, #ff4b4b, #e63946);
 }
 
@@ -197,7 +197,7 @@ a {
         gap: 10px;
     }
 
-    .login-container {
+    .login-register-container {
         margin: 30px auto;
         padding: 30px 20px;
     }
