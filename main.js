@@ -140,7 +140,7 @@ async function addToCartFromList(productId) {
     const product = allProducts.find(p => p.id == productId);
     if (!product) return;
 
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let cart = JSON.parse(localStorage.getItem('cart')) || ;
     const index = cart.findIndex(item => item.id === product.id);
 
     if (index > -1) {
